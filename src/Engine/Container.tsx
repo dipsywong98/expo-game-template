@@ -6,8 +6,8 @@ import PropTypes from 'prop-types'
 const _Container = ({ x = 0, y = 0, style={}, ...props }) => <View
   style={{
     position: 'absolute',
-    left: x + 'px',
-    top: y + 'px',
+    left: x,
+    top: y,
     ...style
   }}
   {...props}

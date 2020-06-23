@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 
 const Vertex: FunctionComponent<ContainerProps&{style?: object}> = ({style, ...props}) => {
   return <Container {...props} style={{
-    width: '16px',
-    height: '16px',
+    width: 16,
+    height: 16,
     backgroundColor: 'pink',
     ...style
   }}/>

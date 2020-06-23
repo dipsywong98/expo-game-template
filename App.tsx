@@ -13,7 +13,7 @@ export default function App() {
       <Button title={(running ? 'pause' : 'resume')} onPress={() => setRunning(!running)}/>
       <Engine entities={{
         1: {x: 50, y: 50, style: {backgroundColor: 'black'}, Component: Vertex},
-        2: {x: 200, y: 200, style:{width: '100px', height: '100px', backgroundColor: 'pink'}, Component: Container}
+        2: {x: 200, y: 200, style:{width: 100, height: 100, backgroundColor: 'pink'}, Component: Container}
       }} systems={[move]} running={running}/>
     </View>
   );
