@@ -20,13 +20,14 @@ _Container.propTypes = {
 }
 
 
-const propTypes = {
+export const ContainerPropTypes = {
   ...interactivePropTypes,
   x: PropTypes.number,
   y: PropTypes.number,
   style: PropTypes.object
 };
-const Container: FunctionComponent<PropTypes.InferProps<typeof propTypes>|InteractiveProps> = makeInteractive(_Container);
-Container.propTypes = propTypes
+export type ContainerProps = PropTypes.InferProps<typeof ContainerPropTypes> | InteractiveProps;
+const Container: FunctionComponent<ContainerProps> = makeInteractive(_Container);
+Container.propTypes = ContainerPropTypes
 
 export default Container

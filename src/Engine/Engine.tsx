@@ -35,6 +35,7 @@ export class Engine extends React.Component<Props> {
   state: { entities: Entities } = {entities: {}}
   events: Array<InteractEvent> = []
   prevMs: number = 0
+  static propTypes = propTypes
 
   constructor(props: Props) {
     super(props);
@@ -73,7 +74,6 @@ export class Engine extends React.Component<Props> {
       }
       this.timer.start()
     }
-    console.log(nextProps.running)
   }
 
   render() {
@@ -85,5 +85,3 @@ export class Engine extends React.Component<Props> {
     </EngineContext.Provider>
   }
 }
-
-Engine.propTypes

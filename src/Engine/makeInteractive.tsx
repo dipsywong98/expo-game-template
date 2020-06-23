@@ -1,5 +1,5 @@
 import {Platform} from 'react-native'
-import React, {ComponentType, FunctionComponent, SyntheticEvent, useState} from 'react'
+import React, {ComponentType, FunctionComponent, SyntheticEvent, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 
 export const interactivePropTypes = {
@@ -18,16 +18,19 @@ export const elementPropTypes = {
 
 export type InteractType = 'down' | 'move' | 'up' | 'press'
 
+export interface Positions {
+  pageX: number
+  pageY: number
+  locationX: number
+  locationY: number
+}
+
 export interface InteractEvent {
   id: string | number
   type: InteractType
   event: SyntheticEvent
-  positions: {
-    pageX: number
-    pageY: number
-    locationX: number
-    locationY: number
-  }
+  positions: Positions,
+  startPositions?: Positions
 }
 
 export type ElementProps = PropTypes.InferProps<typeof elementPropTypes>
@@ -40,21 +43,35 @@ export interface InteractiveProps {
 export const makeInteractive = (Element: ComponentType<ElementProps>): FunctionComponent<InteractiveProps> => {
   return (props: InteractiveProps) => {
     const {onInteract, id, ...otherProps} = props
-    const buildEvent = (type: InteractType, event: SyntheticEvent): InteractEvent => ({
-      id,
-      type,
-      event,
-      positions: {
+    const [startPosition, setStartPositions] = useState<Positions|undefined>(undefined)
+    const buildEvent = (type: InteractType, event: any): InteractEvent => {
+      const positions = {
         // @ts-ignore
         pageX: event.nativeEvent.pageX,
         // @ts-ignore
         pageY: event.nativeEvent.pageY,
         // @ts-ignore
-        locationX: event.nativeEvent.locationX,
+        locationX: event.nativeEvent.locationX || event.nativeEvent.offsetX || 0,
         // @ts-ignore
-        locationY: event.nativeEvent.locationY,
+        locationY: event.nativeEvent.locationY || event.nativeEvent.offsetY || 0,
       }
-    })
+
+      const start  = type === 'down' ? positions : startPosition
+      if(type === 'up'){
+        setStartPositions(undefined)
+      }
+      if(type === 'down'){
+        setStartPositions(positions)
+      }
+
+      return ({
+        id,
+        type,
+        event,
+        positions,
+        startPositions: start
+      })
+    }
     if (Platform.OS !== 'web') {
       return <Element
         onTouchStart={event => onInteract?.(buildEvent('down', event))}
@@ -68,13 +85,14 @@ export const makeInteractive = (Element: ComponentType<ElementProps>): FunctionC
         setMouseDown(true)
         onInteract?.(buildEvent('down', event))
       }
-      const handleMouseMove = (event: SyntheticEvent) => {
-        if (mouseDown) {
-          onInteract?.(buildEvent('move', event))
-        }
-      }
+      // const handleMouseMove = (event: SyntheticEvent) => {
+      //   // console.log(event.nativeEvent)
+      //   if (mouseDown) {
+      //     onInteract?.(buildEvent('move', event))
+      //   }
+      // }
       const handleMouseUp = (event: SyntheticEvent) => {
-        if(mouseDown) {
+        if (mouseDown) {
           setMouseDown(false)
           onInteract?.(buildEvent('up', event))
         }
@@ -83,12 +101,35 @@ export const makeInteractive = (Element: ComponentType<ElementProps>): FunctionC
         event.preventDefault()
         onInteract?.(buildEvent('up', event))
       }
+      useEffect(() => {
+        const mouseUpListener = (event: MouseEvent) => {
+          if (mouseDown) {
+            setMouseDown(false)
+            onInteract?.(buildEvent('up', {
+              nativeEvent: event
+            }))
+          }
+        };
+        const mouseMoveListener = (event: MouseEvent) => {
+          if (mouseDown) {
+            onInteract?.(buildEvent('move', {
+              nativeEvent: event
+            }))
+          }
+        };
+        window.addEventListener('mouseup', mouseUpListener)
+        window.addEventListener('mousemove', mouseMoveListener)
+        return () => {
+          window.removeEventListener('mouseup', mouseUpListener)
+          window.removeEventListener('mousemove', mouseMoveListener)
+        }
+      }, [handleMouseUp])
       return <Element
         {...otherProps}
         onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
+        // onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        // onMouseLeave={handleMouseUp}
         onTouchStart={event => onInteract?.(buildEvent('down', event))}
         onTouchMove={event => onInteract?.(buildEvent('move', event))}
         onTouchEnd={handleTouchEnd}
