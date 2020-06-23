@@ -43,7 +43,9 @@ export class Engine extends React.Component<Props> {
     this.systems = props.systems ?? []
     this.timer = new Timer()
     this.timer.subscribe(this.timerHandler)
-    // this.timer.start()
+    if (props.running === true) {
+      this.timer.start()
+    }
   }
 
   timerHandler = (currentMs: number) => {
@@ -67,12 +69,12 @@ export class Engine extends React.Component<Props> {
 
   componentWillReceiveProps = (nextProps: Readonly<Props>) => {
     if (nextProps.running !== false) {
-      this.timer.stop()
-    } else {
-      if(this.props.running !== nextProps.running){
+      if (this.props.running !== nextProps.running) {
         this.events = []
+        this.timer.start()
       }
-      this.timer.start()
+    } else {
+      this.timer.stop()
     }
   }
 
@@ -80,7 +82,7 @@ export class Engine extends React.Component<Props> {
     return <EngineContext.Provider value={null}>
       <Container id='root'>
         {Object.entries(this.state.entities).map(([id, {Component, ...props}]) => <Component key={id} id={id}
-                                                                                             onInteract={this.handleInteraction } {...props}/>)}
+                                                                                             onInteract={this.handleInteraction} {...props}/>)}
       </Container>
     </EngineContext.Provider>
   }
