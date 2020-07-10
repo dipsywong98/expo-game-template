@@ -1,21 +1,21 @@
 {
   "files": {
-    "app.js": "/static/js/app.c56756bb.chunk.js",
-    "app.js.map": "/static/js/app.c56756bb.chunk.js.map",
-    "runtime~app.js": "/static/js/runtime~app.0dd01ab9.js",
-    "runtime~app.js.map": "/static/js/runtime~app.0dd01ab9.js.map",
-    "static/js/2.0c3373a2.chunk.js": "/static/js/2.0c3373a2.chunk.js",
-    "static/js/2.0c3373a2.chunk.js.map": "/static/js/2.0c3373a2.chunk.js.map",
-    "favicon-16.png": "/favicon-16.png",
-    "favicon-32.png": "/favicon-32.png",
-    "favicon.ico": "/favicon.ico",
-    "index.html": "/index.html",
-    "manifest.json": "/manifest.json",
-    "serve.json": "/serve.json"
+    "app.js": "/expo-game-template/static/js/app.004ce478.chunk.js",
+    "app.js.map": "/expo-game-template/static/js/app.004ce478.chunk.js.map",
+    "runtime~app.js": "/expo-game-template/static/js/runtime~app.07a5e724.js",
+    "runtime~app.js.map": "/expo-game-template/static/js/runtime~app.07a5e724.js.map",
+    "static/js/2.0c3373a2.chunk.js": "/expo-game-template/static/js/2.0c3373a2.chunk.js",
+    "static/js/2.0c3373a2.chunk.js.map": "/expo-game-template/static/js/2.0c3373a2.chunk.js.map",
+    "favicon-16.png": "/expo-game-template/favicon-16.png",
+    "favicon-32.png": "/expo-game-template/favicon-32.png",
+    "favicon.ico": "/expo-game-template/favicon.ico",
+    "index.html": "/expo-game-template/index.html",
+    "manifest.json": "/expo-game-template/manifest.json",
+    "serve.json": "/expo-game-template/serve.json"
   },
   "entrypoints": [
-    "static/js/runtime~app.0dd01ab9.js",
+    "static/js/runtime~app.07a5e724.js",
     "static/js/2.0c3373a2.chunk.js",
-    "static/js/app.c56756bb.chunk.js"
+    "static/js/app.004ce478.chunk.js"
   ]
 }
