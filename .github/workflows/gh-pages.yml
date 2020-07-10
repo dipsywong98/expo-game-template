@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --frozen-lockfile
+      - run: yarn global add expo
       - run: ./node_modules/.bin/expo build:web
       - uses: peaceiris/actions-gh-pages@v3
         with:
