@@ -67,7 +67,7 @@ export class Engine extends React.Component<Props> {
     this.events.push(event)
   }
 
-  componentWillReceiveProps = (nextProps: Readonly<Props>) => {
+  UNSAFE_componentWillReceiveProps = (nextProps: Readonly<Props>) => {
     if (nextProps.running !== false) {
       if (this.props.running !== nextProps.running) {
         this.events = []
