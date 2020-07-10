@@ -1,8 +1,10 @@
-# expo-game
+# expo-game-template
 
-> Expo game engine, react native game engine that supports android ios and web
+> Expo game engine, react native game engine starter that supports android ios and web
 
 Inherit all yarn commands from expo
+
+Inspired by [react-native-game-engine](https://github.com/bberak/react-native-game-engine)
 
 ## Start development
 
