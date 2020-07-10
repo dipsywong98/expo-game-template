@@ -16,7 +16,7 @@ export const elementPropTypes = {
   onTouchEnd: PropTypes.func,
 }
 
-export type InteractType = 'down' | 'move' | 'up' | 'press'
+export type InteractType = 'down' | 'move' | 'up'
 
 export interface Positions {
   pageX: number
@@ -30,7 +30,7 @@ export interface InteractEvent {
   type: InteractType
   event: SyntheticEvent
   positions: Positions,
-  startPositions?: Positions
+  downPositions?: Positions
 }
 
 export type ElementProps = PropTypes.InferProps<typeof elementPropTypes>
@@ -43,7 +43,7 @@ export interface InteractiveProps {
 export const makeInteractive = (Element: ComponentType<ElementProps>): FunctionComponent<InteractiveProps> => {
   return (props: InteractiveProps) => {
     const {onInteract, id, ...otherProps} = props
-    const [startPosition, setStartPositions] = useState<Positions|undefined>(undefined)
+    const [startPositions, setStartPositions] = useState<Positions|undefined>(undefined)
     const buildEvent = (type: InteractType, event: any): InteractEvent => {
       const positions = {
         // @ts-ignore
@@ -56,7 +56,7 @@ export const makeInteractive = (Element: ComponentType<ElementProps>): FunctionC
         locationY: event.nativeEvent.locationY || event.nativeEvent.offsetY || 0,
       }
 
-      const start  = type === 'down' ? positions : startPosition
+      const start  = type === 'down' ? positions : startPositions
       if(type === 'up'){
         setStartPositions(undefined)
       }
@@ -69,7 +69,7 @@ export const makeInteractive = (Element: ComponentType<ElementProps>): FunctionC
         type,
         event,
         positions,
-        startPositions: start
+        downPositions: start
       })
     }
     if (Platform.OS !== 'web') {

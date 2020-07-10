@@ -1,12 +1,12 @@
-import {System} from "../../Engine/Engine";
+import {System} from "../../Engine";
 
 export const move: System = (entities, {events}) => {
   const movingEntities = events.filter(({type}) => type === 'move')
   movingEntities.forEach((event) => {
     const entity = entities[event.id]
-    if(event.startPositions){
-      entity.x = event.positions.pageX - event.startPositions.locationX
-      entity.y =  event.positions.pageY - event.startPositions.locationY
+    if (event.downPositions) {
+      entity.x = event.positions.pageX - event.downPositions.locationX
+      entity.y = event.positions.pageY - event.downPositions.locationY
     }
   })
   return entities
