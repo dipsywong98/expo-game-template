@@ -20,10 +20,20 @@ export class Timer {
   private subscribers: TimerSubscriber[] = []
   private loopId?: number
   private running: boolean = false
+  private timeStampMinusTimerMs: number = Date.now()
+
+  public now(): number{
+    return Date.now() - this.timeStampMinusTimerMs
+  }
 
   constructor() {
-    this.subscribers = [];
+    this.subscribers = [this.syncTimer];
     this.loopId = undefined;
+  }
+
+  private syncTimer = (currentMs: number) => {
+    this.timeStampMinusTimerMs = Date.now() - currentMs
+    this.unsubscribe(this.syncTimer)
   }
 
   public loop = (time: number) => {

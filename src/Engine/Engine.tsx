@@ -79,7 +79,7 @@ export class Engine extends React.Component<Props> {
   }
 
   render() {
-    return <EngineContext.Provider value={null}>
+    return <EngineContext.Provider value={{timer: this.timer}}>
       <Container id='root'>
         {Object.entries(this.state.entities).map(([id, {Component, ...props}]) => <Component key={id} id={id}
                                                                                              onInteract={this.handleInteraction} {...props}/>)}

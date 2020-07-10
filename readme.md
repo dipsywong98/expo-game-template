@@ -1,6 +1,6 @@
 # expo-game-template
 
-> Expo game engine, react native game engine starter that supports android ios and web
+> A Web+Android+iOS game boilerplate in expo react native
 
 Inherit all yarn commands from expo
 
@@ -139,7 +139,8 @@ interface InteractEvent {
   type: InteractType // 'down' | 'move' | 'up'
   event: SyntheticEvent // the native event
   positions: Positions, // global and local position
-  downPositions?: Positions
+  startPositions?: Positions  // global and local position of previous down event
+  startTime?: number // time that previous down event occur
 }
 
 interface Positions {

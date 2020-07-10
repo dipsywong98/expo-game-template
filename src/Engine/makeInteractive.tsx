@@ -1,6 +1,7 @@
 import {Platform} from 'react-native'
 import React, {ComponentType, FunctionComponent, SyntheticEvent, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
+import {useEngineContext} from "./EngineContex";
 
 export const interactivePropTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -29,8 +30,9 @@ export interface InteractEvent {
   id: string | number
   type: InteractType
   event: SyntheticEvent
-  positions: Positions,
-  downPositions?: Positions
+  positions: Positions
+  startPositions?: Positions
+  startTime?: number
 }
 
 export type ElementProps = PropTypes.InferProps<typeof elementPropTypes>
@@ -44,6 +46,8 @@ export const makeInteractive = (Element: ComponentType<ElementProps>): FunctionC
   return (props: InteractiveProps) => {
     const {onInteract, id, ...otherProps} = props
     const [startPositions, setStartPositions] = useState<Positions|undefined>(undefined)
+    const [startTime_, setStartTime] = useState<number|undefined>(undefined)
+    const {timer} = useEngineContext()
     const buildEvent = (type: InteractType, event: any): InteractEvent => {
       const positions = {
         // @ts-ignore
@@ -56,20 +60,25 @@ export const makeInteractive = (Element: ComponentType<ElementProps>): FunctionC
         locationY: event.nativeEvent.locationY || event.nativeEvent.offsetY || 0,
       }
 
+      const now = timer.now()
       const start  = type === 'down' ? positions : startPositions
       if(type === 'up'){
         setStartPositions(undefined)
+        setStartTime(undefined)
       }
       if(type === 'down'){
         setStartPositions(positions)
+        setStartTime(now)
       }
+      const startTime = type === 'down' ? now : startTime_
 
       return ({
         id,
         type,
         event,
         positions,
-        downPositions: start
+        startPositions: start,
+        startTime
       })
     }
     if (Platform.OS !== 'web') {

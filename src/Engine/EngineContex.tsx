@@ -1,3 +1,8 @@
-import {createContext} from "react";
+import {createContext, useContext} from "react";
+import {Timer} from "./Timer";
 
-export const EngineContext = createContext<null>(null)
+export const EngineContext = createContext({
+  timer: new Timer()
+})
+
+export const useEngineContext = () => useContext(EngineContext)
