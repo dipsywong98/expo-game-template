@@ -8,7 +8,9 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "build:web": "expo build:web",
-    "deploy:web": "gh-pages -d web-build"
+    "deploy:web": "gh-pages -d web-build",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src App.tsx",
+    "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx src App.tsx"
   },
   "dependencies": {
     "expo": "~37.0.3",

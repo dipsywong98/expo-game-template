@@ -24,10 +24,11 @@ expo build:web # static files at web-build
 ```jsx
 import React, {useMemo, useState} from 'react'
 import {Engine} from './Engine'
+import {Vertex} from './Vertex'
 () => {
 const [running, setRunning] = useState(true)
 const entities = useMemo(() => ({
-1: {x: 50, y: 50, style: {backgroundColor: 'black'}, Component: Vertex},
+1: {x: 50, y: 50, style: {backgroundColor: 'black'}, Component: Vertext},
 2: {x: 200, y: 200, style:{width: 100, height: 100, backgroundColor: 'pink'}, Component: Container}
 /* other entities */
 }), [])
@@ -47,17 +48,21 @@ An object that maps entity id to entity definition, which consist of x, y, Compo
 Component need to have Container as root or wrapped by `makeInteractive`
 
 ```tsx
-import Container, {ContainerProps, ContainerPropTypes} from "../../Engine/Container";
-import React, {FunctionComponent} from "react";
+import Container, { ContainerProps, ContainerPropTypes } from '../../Engine/Container'
+import React, { FunctionComponent } from 'react'
 import PropTypes from 'prop-types'
 
-const Vertex: FunctionComponent<ContainerProps&{style?: object}> = ({style, ...props}) => {
-  return <Container {...props} style={{
-    width: 16,
-    height: 16,
-    backgroundColor: 'pink',
-    ...style
-  }}/>
+const Vertex: FunctionComponent<ContainerProps> = ({ style, ...props }) => {
+  return (
+    <Container
+      {...props}
+      style={{
+        width: 16,
+        height: 16,
+        backgroundColor: 'pink',
+        ...style
+      }}
+    />)
 }
 
 Vertex.propTypes = {
@@ -70,39 +75,49 @@ export default Vertex
 ```
 
 ```tsx
-import React, {FunctionComponent} from 'react'
-import {View} from 'react-native'
-import {elementPropTypes, InteractiveProps, interactivePropTypes, makeInteractive} from './makeInteractive'
+import React, { FunctionComponent } from 'react'
+import { View } from 'react-native'
+import {
+  ElementProps,
+  elementPropTypes,
+  InteractiveProps,
+  interactivePropTypes,
+  makeInteractive
+} from './makeInteractive'
 import PropTypes from 'prop-types'
 
-const _Container = ({ x = 0, y = 0, style={}, ...props }) => <View
-  style={{
-    position: 'absolute',
-    left: x,
-    top: y,
-    ...style
-  }}
-  {...props}
-/>
-
-_Container.propTypes = {
+const propTypes = {
   ...elementPropTypes,
-  x: PropTypes.number,
-  y: PropTypes.number
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  style: PropTypes.object
 }
 
+const _Container: FunctionComponent<ElementProps & PropTypes.InferProps<typeof propTypes>> = ({ x = 0, y = 0, style = {}, ...props }) => (
+  <View
+    style={{
+      position: 'absolute',
+      left: x,
+      top: y,
+      ...style
+    }}
+    {...props}
+  />
+)
+_Container.propTypes = propTypes
 
 export const ContainerPropTypes = {
   ...interactivePropTypes,
   x: PropTypes.number,
   y: PropTypes.number,
   style: PropTypes.object
-};
-export type ContainerProps = PropTypes.InferProps<typeof ContainerPropTypes> | InteractiveProps;
-const Container: FunctionComponent<ContainerProps> = makeInteractive(_Container);
+}
+export type ContainerProps = PropTypes.InferProps<typeof ContainerPropTypes> & InteractiveProps & ElementProps
+const Container: FunctionComponent<ContainerProps> = makeInteractive(_Container)
 Container.propTypes = ContainerPropTypes
 
 export default Container
+
 ```
 
 ### System
@@ -114,19 +129,20 @@ A system will accept entities from the previous frame or entities returned by pr
 and second parameter is the object `{events, currentMs, deltaMs}`, and it should return new entities.
 
 ```ts
-import {System} from './Engine'
+import { System } from '../../Engine'
 
-export const move: System = (entities, {events, currentMs, deltaMs}) => {
-  const movingEntities = events.filter(({type}) => type === 'move')
+export const move: System = (entities, { events }) => {
+  const movingEntities = events.filter(({ type }) => type === 'move')
   movingEntities.forEach((event) => {
     const entity = entities[event.id]
-    if(event.startPositions){
+    if (event.startPositions !== undefined) {
       entity.x = event.positions.pageX - event.startPositions.locationX
-      entity.y =  event.positions.pageY - event.startPositions.locationY
+      entity.y = event.positions.pageY - event.startPositions.locationY
     }
   })
   return entities
 }
+
 ```
 
 ### InteractEvent

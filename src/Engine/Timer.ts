@@ -19,58 +19,57 @@ export type TimerSubscriber = (currentMs: number) => unknown
 export class Timer {
   private subscribers: TimerSubscriber[] = []
   private loopId?: number
-  private running: boolean = false
+  private running = false
   private timeStampMinusTimerMs: number = Date.now()
 
-  public now(): number{
+  public now (): number {
     return Date.now() - this.timeStampMinusTimerMs
   }
 
-  constructor() {
-    this.subscribers = [this.syncTimer];
-    this.loopId = undefined;
+  constructor () {
+    this.subscribers = [this.syncTimer]
+    this.loopId = undefined
   }
 
-  private syncTimer = (currentMs: number) => {
+  private readonly syncTimer = (currentMs: number): void => {
     this.timeStampMinusTimerMs = Date.now() - currentMs
     this.unsubscribe(this.syncTimer)
   }
 
-  public loop = (time: number) => {
-    if (this.loopId !==undefined) {
+  public loop = (time: number): void => {
+    if (this.loopId !== undefined) {
       this.subscribers.forEach(callback => {
-        callback(time);
-      });
+        callback(time)
+      })
     }
 
-    this.loopId = requestAnimationFrame(this.loop);
-  };
+    this.loopId = requestAnimationFrame(this.loop)
+  }
 
-  public start() {
-    if (!this.loopId) {
-      this.loop(Date.now());
+  public start (): void {
+    if (this.loopId === undefined) {
+      this.loop(Date.now())
     }
     this.running = true
   }
 
-  public stop() {
-    if (this.loopId) {
-      cancelAnimationFrame(this.loopId);
-      this.loopId = undefined;
+  public stop (): void {
+    if (this.loopId !== undefined) {
+      cancelAnimationFrame(this.loopId)
+      this.loopId = undefined
     }
     this.running = false
   }
 
-  public subscribe(callback: TimerSubscriber) {
-    if (this.subscribers.indexOf(callback) === -1)
-      this.subscribers.push(callback);
+  public subscribe (callback: TimerSubscriber): void {
+    if (!this.subscribers.includes(callback)) { this.subscribers.push(callback) }
   }
 
-  public unsubscribe(callback: TimerSubscriber) {
+  public unsubscribe (callback: TimerSubscriber): void {
     this.subscribers = this.subscribers.filter(s => s !== callback)
   }
 
-  public isRunning(){
+  public isRunning (): boolean {
     return this.running
   }
 }
